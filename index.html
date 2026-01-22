@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白色数字冷色调日期与星期显示工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', 'PingFang SC', sans-serif;
+        }
+        
+        body {
+            background-color: #0c1a2d;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+        
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            transition: opacity 0.5s ease;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            /* 去掉渐变背景色，改为纯白色 */
+            color: white;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            transition: opacity 0.5s ease;
+        }
+        
+        .date-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 35px;
+            padding: 70px 80px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .date-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            flex-wrap: nowrap;
+            gap: 0;
+            margin-bottom: 80px;
+            width: 100%;
+        }
+        
+        .date-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            min-height: 320px;
+        }
+        
+        .date-label {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #cbd5e1;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            height: 60px;
+            display: flex;
+            align-items: flex-end;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s ease;
+        }
+        
+        .date-value {
+            font-size: 200px;
+            font-weight: 900;
+            line-height: 1;
+            transition: all 0.3s ease;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        .year-value {
+            color: white;
+        }
+        
+        .month-value {
+            color: white;
+        }
+        
+        .day-value {
+            color: white;
+        }
+        
+        .separator {
+            font-size: 140px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            margin: 0 40px;
+            align-self: center;
+            line-height: 1;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .weekday-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 0;
+            margin-bottom: 80px;
+        }
+        
+        .weekday-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+        }
+        
+        .weekday-label {
+            font-size: 180px;
+            color: #cbd5e1;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: all 0.5s ease;
+        }
+        
+        .weekday-value {
+            font-size: 180px;
+            font-weight: 900;
+            color: white;
+            transition: all 0.3s ease;
+            letter-spacing: 5px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* 实时时间样式 - 已调大字体 */
+        .time-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 10px;
+        }
+        
+        .time-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .time-label {
+            font-size: 140px;  /* 调大了 */
+            color: #cbd5e1;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: all 0.5s ease;
+        }
+        
+        .time-value {
+            font-size: 140px;  /* 调大了 */
+            font-weight: 900;
+            color: white;
+            transition: all 0.3s ease;
+            letter-spacing: 5px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        .time-separator {
+            font-size: 120px;  /* 调大了 */
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            margin: 0 20px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: blink 1s infinite;
+            align-self: flex-end;
+            margin-bottom: 30px;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .themes-section {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 35px;
+            padding: 50px 60px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .themes-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-align: center;
+            /* 去掉蓝色，改为纯白色 */
+            color: white;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+        
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .theme-btn {
+            padding: 25px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: #0f172a;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .theme-btn:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .theme-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9), 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .theme-btn i {
+            font-size: 2.5rem;
+        }
+        
+        /* 全屏按钮样式 */
+        .fullscreen-btn {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.9);
+            color: #06b6d4;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(15, 23, 42, 1);
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .fullscreen-btn i {
+            transition: transform 0.3s ease;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* 全屏模式样式 */
+        body.fullscreen-mode {
+            padding: 0;
+            justify-content: center;
+        }
+        
+        body.fullscreen-mode .container {
+            gap: 0;
+            max-width: 100%;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+        }
+        
+        body.fullscreen-mode .date-display {
+            max-width: 95%;
+            border-radius: 25px;
+            padding: 5vh 5vw;
+            margin: 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 95%;
+            height: 90vh;
+        }
+        
+        /* 全屏时隐藏其他元素 */
+        body.fullscreen-mode .header,
+        body.fullscreen-mode .themes-section,
+        body.fullscreen-mode .footer {
+            display: none !important;
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        /* 全屏时日期窗口充满屏幕 */
+        body.fullscreen-mode .date-container {
+            margin-bottom: 5vh;
+        }
+        
+        body.fullscreen-mode .date-value {
+            font-size: 20vh;
+            height: 25vh;
+        }
+        
+        body.fullscreen-mode .weekday-value,
+        body.fullscreen-mode .weekday-label {
+            font-size: 18vh;
+        }
+        
+        body.fullscreen-mode .separator {
+            font-size: 16vh;
+            height: 25vh;
+        }
+        
+        body.fullscreen-mode .date-label {
+            font-size: 4vh;
+            margin-bottom: 2vh;
+            height: auto;
+        }
+        
+        /* 全屏模式下的时间样式 */
+        body.fullscreen-mode .time-value,
+        body.fullscreen-mode .time-label {
+            font-size: 16vh;  /* 全屏下也调大了 */
+        }
+        
+        body.fullscreen-mode .time-separator {
+            font-size: 14vh;  /* 全屏下也调大了 */
+        }
+        
+        body.fullscreen-mode .weekday-container {
+            margin-bottom: 5vh;
+        }
+        
+        @media (max-width: 1400px) {
+            .date-value {
+                font-size: 180px;
+                height: 200px;
+            }
+            
+            .separator {
+                font-size: 120px;
+                height: 200px;
+                margin: 0 30px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 160px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 120px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 100px;  /* 调大了 */
+            }
+            
+            .date-label {
+                font-size: 2.2rem;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 18vh;
+                height: 22vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 16vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 14vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 12vh;  /* 调大了 */
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .date-value {
+                font-size: 160px;
+                height: 180px;
+            }
+            
+            .separator {
+                font-size: 100px;
+                height: 180px;
+                margin: 0 25px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 140px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 100px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 85px;  /* 调大了 */
+            }
+            
+            .date-display {
+                padding: 60px 50px;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 16vh;
+                height: 20vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 14vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 12vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 10vh;  /* 调大了 */
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .date-value {
+                font-size: 140px;
+                height: 160px;
+            }
+            
+            .separator {
+                font-size: 80px;
+                height: 160px;
+                margin: 0 20px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 120px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 90px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 75px;  /* 调大了 */
+            }
+            
+            .theme-buttons {
+                grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+                gap: 25px;
+            }
+            
+            .date-display {
+                padding: 50px 40px;
+            }
+            
+            .date-label {
+                font-size: 2rem;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 14vh;
+                height: 18vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 12vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 10vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 8vh;  /* 调大了 */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .date-value {
+                font-size: 120px;
+                height: 140px;
+            }
+            
+            .separator {
+                font-size: 70px;
+                height: 140px;
+                margin: 0 15px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 100px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 80px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 65px;  /* 调大了 */
+            }
+            
+            .date-label {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .themes-section h2 {
+                font-size: 2rem;
+            }
+            
+            .date-display {
+                padding: 40px 30px;
+            }
+            
+            .date-container {
+                margin-bottom: 60px;
+            }
+            
+            .weekday-container {
+                margin-bottom: 60px;
+            }
+            
+            .weekday-item {
+                gap: 40px;
+            }
+            
+            .time-item {
+                gap: 20px;
+            }
+            
+            .fullscreen-btn {
+                top: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 12vh;
+                height: 16vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 10vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 8vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 7vh;  /* 调大了 */
+            }
+        }
+        
+        @media (max-width: 650px) {
+            .date-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .date-item {
+                min-height: auto;
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 30px;
+            }
+            
+            .date-label {
+                width: 100px;
+                margin-bottom: 0;
+                margin-right: 30px;
+                justify-content: flex-end;
+                height: auto;
+            }
+            
+            .date-value {
+                height: auto;
+                font-size: 120px;
+            }
+            
+            .separator {
+                display: none;
+            }
+            
+            .weekday-item {
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                gap: 30px;
+            }
+            
+            .time-item {
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                gap: 15px;
+            }
+            
+            body.fullscreen-mode .date-container {
+                flex-direction: column;
+            }
+            
+            body.fullscreen-mode .date-item {
+                flex-direction: row;
+            }
+            
+            body.fullscreen-mode .separator {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .date-value {
+                font-size: 100px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 90px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 60px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 50px;  /* 调大了 */
+            }
+            
+            .date-label {
+                font-size: 1.6rem;
+            }
+            
+            .theme-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .themes-section h2 {
+                font-size: 1.8rem;
+            }
+            
+            .date-display {
+                padding: 30px 20px;
+            }
+            
+            .themes-section {
+                padding: 30px 20px;
+            }
+            
+            .weekday-item {
+                gap: 20px;
+            }
+            
+            .time-item {
+                gap: 10px;
+            }
+            
+            .fullscreen-btn {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 10vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 9vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 6vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 5vh;  /* 调大了 */
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .date-value {
+                font-size: 80px;
+            }
+            
+            .weekday-value, .weekday-label {
+                font-size: 70px;
+            }
+            
+            .time-value, .time-label {
+                font-size: 50px;  /* 调大了 */
+            }
+            
+            .time-separator {
+                font-size: 40px;  /* 调大了 */
+            }
+            
+            .weekday-item {
+                gap: 15px;
+            }
+            
+            .time-item {
+                gap: 8px;
+            }
+            
+            body.fullscreen-mode .date-value {
+                font-size: 8vh;
+            }
+            
+            body.fullscreen-mode .weekday-value,
+            body.fullscreen-mode .weekday-label {
+                font-size: 7vh;
+            }
+            
+            body.fullscreen-mode .time-value,
+            body.fullscreen-mode .time-label {
+                font-size: 5vh;  /* 调大了 */
+            }
+            
+            body.fullscreen-mode .time-separator {
+                font-size: 4vh;  /* 调大了 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 全屏按钮 -->
+    <button class="fullscreen-btn" id="fullscreenBtn" title="切换全屏模式">
+        <i class="fas fa-expand"></i>
+    </button>
+    
+    <div class="container">
+        <div class="header">
+            <h1> 东莞市佳迪新材料有限公司</h1>
+            <p></p>
+        </div>
+        
+        <div class="date-display">
+            <div class="date-container">
+                <div class="date-item">
+                    <div class="date-label">年</div>
+                    <div class="date-value year-value" id="year">2023</div>
+                </div>
+                
+                <span class="separator">-</span>
+                
+                <div class="date-item">
+                    <div class="date-label">月</div>
+                    <div class="date-value month-value" id="month">10</div>
+                </div>
+                
+                <span class="separator">-</span>
+                
+                <div class="date-item">
+                    <div class="date-label">日</div>
+                    <div class="date-value day-value" id="day">27</div>
+                </div>
+            </div>
+            
+            <div class="weekday-container">
+                <div class="weekday-item">
+                    <div class="weekday-label">星期</div>
+                    <div class="weekday-value" id="weekday">五</div>
+                </div>
+            </div>
+            
+            <!-- 实时时间显示 -->
+            <div class="time-container">
+                <div class="time-item">
+                    <div class="time-label"></div>
+                    <div class="time-value" id="hours">12</div>
+                    <span class="time-separator">:</span>
+                    <div class="time-value" id="minutes">00</div>
+                    <span class="time-separator">:</span>
+                    <div class="time-value" id="seconds">00</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="themes-section">
+            <h2><i class="fas fa-palette"></i> 选择主题颜色</h2>
+            <div class="theme-buttons" id="theme-buttons">
+                <!-- 主题按钮将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 东莞市佳迪新材料有限公司 | 数字大小: 200像素 | 已提供8种冷色调主题 | 支持全屏模式 | 实时时间显示</p>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const yearElement = document.getElementById('year');
+        const monthElement = document.getElementById('month');
+        const dayElement = document.getElementById('day');
+        const weekdayElement = document.getElementById('weekday');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        const themeButtonsContainer = document.getElementById('theme-buttons');
+        const bodyElement = document.body;
+        const dateDisplayElement = document.querySelector('.date-display');
+        const themesSectionElement = document.querySelector('.themes-section');
+        const headerElement = document.querySelector('.header');
+        const footerElement = document.querySelector('.footer');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const fullscreenIcon = fullscreenBtn.querySelector('i');
+        
+        // 星期映射
+        const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+        
+        // 主题定义 - 使用您指定的颜色
+        const themes = [
+            {
+                id: 'theme1',
+                name: '深海蓝',
+                bgColor: '#0c1a2d',
+                labelColor: '#93c5fd',
+                buttonColor: '#1e293b',
+                buttonTextColor: '#bfdbfe',
+                icon: 'fas fa-water'
+            },
+            {
+                id: 'theme2',
+                name: '冰川蓝',
+                bgColor: '#0c4a6e',
+                labelColor: '#bae6fd',
+                buttonColor: '#164e63',
+                buttonTextColor: '#e0f2fe',
+                icon: 'fas fa-icicles'
+            },
+            {
+                id: 'theme3',
+                name: '冰晶紫',
+                bgColor: '#1e1b4b',
+                labelColor: '#ddd6fe',
+                buttonColor: '#312e81',
+                buttonTextColor: '#ede9fe',
+                icon: 'fas fa-snowflake'
+            },
+            {
+                id: 'theme4',
+                name: '深蓝紫',
+                bgColor: '#1e1b4b',
+                labelColor: '#a5b4fc',
+                buttonColor: '#312e81',
+                buttonTextColor: '#c7d2fe',
+                icon: 'fas fa-moon'
+            },
+            {
+                id: 'theme5',
+                name: '冷灰',
+                bgColor: '#1f2937',
+                labelColor: '#e5e7eb',
+                buttonColor: '#374151',
+                buttonTextColor: '#f9fafb',
+                icon: 'fas fa-cloud'
+            },
+            {
+                id: 'theme6',
+                name: '青绿色',
+                bgColor: '#134e4a',
+                labelColor: '#5eead4',
+                buttonColor: '#115e59',
+                buttonTextColor: '#ccfbf1',
+                icon: 'fas fa-feather'
+            },
+            {
+                id: 'theme7',
+                name: '蓝绿色',
+                bgColor: '#164e63',
+                labelColor: '#67e8f9',
+                buttonColor: '#0e7490',
+                buttonTextColor: '#cffafe',
+                icon: 'fas fa-fish'
+            },
+            {
+                id: 'theme8',
+                name: '薄荷绿',
+                bgColor: '#064e3b',
+                labelColor: '#6ee7b7',
+                buttonColor: '#047857',
+                buttonTextColor: '#d1fae5',
+                icon: 'fas fa-leaf'
+            }
+        ];
+        
+        // 全屏状态
+        let isFullscreen = false;
+        
+        // 初始化主题按钮
+        function initThemeButtons() {
+            themes.forEach(theme => {
+                const button = document.createElement('button');
+                button.className = 'theme-btn';
+                button.id = theme.id;
+                button.innerHTML = `<i class="${theme.icon}"></i> ${theme.name}`;
+                button.style.backgroundColor = theme.buttonColor;
+                button.style.color = theme.buttonTextColor;
+                
+                button.addEventListener('click', () => {
+                    applyTheme(theme);
+                    setActiveThemeButton(theme.id);
+                });
+                
+                themeButtonsContainer.appendChild(button);
+            });
+            
+            // 默认应用第一个主题
+            applyTheme(themes[0]);
+            setActiveThemeButton(themes[0].id);
+        }
+        
+        // 应用主题
+        function applyTheme(theme) {
+            // 设置背景色
+            bodyElement.style.backgroundColor = theme.bgColor;
+            
+            // 设置日期标签颜色
+            const dateLabels = document.querySelectorAll('.date-label');
+            dateLabels.forEach(label => {
+                label.style.color = theme.labelColor;
+            });
+            
+            // 设置星期标签颜色
+            const weekdayLabel = document.querySelector('.weekday-label');
+            weekdayLabel.style.color = theme.labelColor;
+            
+            // 设置时间标签颜色
+            const timeLabel = document.querySelector('.time-label');
+            timeLabel.style.color = theme.labelColor;
+            
+            // 设置日期显示容器的背景色
+            dateDisplayElement.style.backgroundColor = theme.buttonColor;
+            dateDisplayElement.style.borderColor = `rgba(${hexToRgb(theme.labelColor)}, 0.3)`;
+            
+            // 设置主题区域背景色
+            themesSectionElement.style.backgroundColor = theme.buttonColor;
+            themesSectionElement.style.borderColor = `rgba(${hexToRgb(theme.labelColor)}, 0.3)`;
+            
+            // 设置分隔符颜色
+            const separators = document.querySelectorAll('.separator');
+            separators.forEach(separator => {
+                separator.style.color = `rgba(${hexToRgb(theme.labelColor)}, 0.7)`;
+            });
+            
+            // 设置时间分隔符颜色
+            const timeSeparators = document.querySelectorAll('.time-separator');
+            timeSeparators.forEach(separator => {
+                separator.style.color = `rgba(${hexToRgb(theme.labelColor)}, 0.7)`;
+            });
+            
+            // 设置全屏按钮颜色
+            fullscreenBtn.style.background = theme.buttonColor;
+            fullscreenBtn.style.color = theme.labelColor;
+        }
+        
+        // 调整颜色亮度
+        function adjustColor(color, amount) {
+            const rgb = hexToRgbArray(color);
+            const r = Math.max(0, Math.min(255, rgb[0] + amount));
+            const g = Math.max(0, Math.min(255, rgb[1] + amount));
+            const b = Math.max(0, Math.min(255, rgb[2] + amount));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // 设置活动主题按钮
+        function setActiveThemeButton(themeId) {
+            // 移除所有按钮的active类
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 为当前主题按钮添加active类
+            document.getElementById(themeId).classList.add('active');
+        }
+        
+        // 十六进制颜色转RGB数组
+        function hexToRgbArray(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? 
+                [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] 
+                : [147, 197, 253];
+        }
+        
+        // 十六进制颜色转RGB字符串
+        function hexToRgb(hex) {
+            const rgb = hexToRgbArray(hex);
+            return `${rgb[0]}, ${rgb[1]}, ${rgb[2]}`;
+        }
+        
+        // 更新日期
+        function updateDate() {
+            const now = new Date();
+            
+            // 更新年、月、日
+            yearElement.textContent = now.getFullYear();
+            monthElement.textContent = String(now.getMonth() + 1).padStart(2, '0');
+            dayElement.textContent = String(now.getDate()).padStart(2, '0');
+            
+            // 更新星期
+            weekdayElement.textContent = weekdays[now.getDay()];
+        }
+        
+        // 更新实时时间
+        function updateTime() {
+            const now = new Date();
+            
+            // 获取时、分、秒
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // 更新显示
+            hoursElement.textContent = String(hours).padStart(2, '0');
+            minutesElement.textContent = String(minutes).padStart(2, '0');
+            secondsElement.textContent = String(seconds).padStart(2, '0');
+        }
+        
+        // 切换全屏模式
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                // 进入全屏模式
+                bodyElement.classList.add('fullscreen-mode');
+                fullscreenIcon.className = 'fas fa-compress';
+                fullscreenBtn.title = '退出全屏模式';
+                isFullscreen = true;
+                
+                // 隐藏其他元素
+                headerElement.style.opacity = '0';
+                themesSectionElement.style.opacity = '0';
+                footerElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    headerElement.style.display = 'none';
+                    themesSectionElement.style.display = 'none';
+                    footerElement.style.display = 'none';
+                }, 500);
+                
+                // 尝试使用全屏API（如果浏览器支持）
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+            } else {
+                // 退出全屏模式
+                bodyElement.classList.remove('fullscreen-mode');
+                fullscreenIcon.className = 'fas fa-expand';
+                fullscreenBtn.title = '切换全屏模式';
+                isFullscreen = false;
+                
+                // 显示其他元素
+                headerElement.style.display = '';
+                themesSectionElement.style.display = '';
+                footerElement.style.display = '';
+                
+                setTimeout(() => {
+                    headerElement.style.opacity = '1';
+                    themesSectionElement.style.opacity = '1';
+                    footerElement.style.opacity = '1';
+                }, 10);
+                
+                // 退出全屏API
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+        
+        // 监听全屏变化事件
+        function handleFullscreenChange() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                // 用户退出了全屏模式
+                bodyElement.classList.remove('fullscreen-mode');
+                fullscreenIcon.className = 'fas fa-expand';
+                fullscreenBtn.title = '切换全屏模式';
+                isFullscreen = false;
+                
+                // 显示其他元素
+                headerElement.style.display = '';
+                themesSectionElement.style.display = '';
+                footerElement.style.display = '';
+                
+                setTimeout(() => {
+                    headerElement.style.opacity = '1';
+                    themesSectionElement.style.opacity = '1';
+                    footerElement.style.opacity = '1';
+                }, 10);
+            }
+        }
+        
+        // 监听键盘事件（ESC键退出全屏）
+        function handleKeydown(e) {
+            if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+                if (isFullscreen) {
+                    toggleFullscreen();
+                }
+            }
+            
+            // F11键也支持全屏切换
+            if (e.key === 'F11') {
+                e.preventDefault(); // 阻止浏览器默认的F11全屏行为
+                toggleFullscreen();
+            }
+            
+            // 空格键也可以切换全屏（可选）
+            if (e.key === ' ' && isFullscreen) {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initThemeButtons();
+            updateDate();
+            updateTime(); // 初始更新时间
+            
+            // 启动实时时间更新（每秒更新一次）
+            setInterval(updateTime, 1000);
+            
+            // 设置全屏按钮事件
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            // 监听全屏变化事件
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('msfullscreenchange', handleFullscreenChange);
+            
+            // 监听键盘事件
+            document.addEventListener('keydown', handleKeydown);
+            
+            // 每天午夜更新日期
+            const now = new Date();
+            const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            const timeUntilMidnight = tomorrow - now;
+            
+            setTimeout(() => {
+                updateDate();
+                // 之后每24小时更新一次
+                setInterval(updateDate, 24 * 60 * 60 * 1000);
+            }, timeUntilMidnight);
+        });
+    </script>
+</body>
+</html>
